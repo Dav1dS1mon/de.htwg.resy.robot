@@ -1,6 +1,6 @@
 # Information zum Projekt
 
-> Zuständige Professor: Prof. Dr. Mächtel
+> Zuständiger Professor: Prof. Dr. Mächtel
 
 > Hochschule: HTWG
 
