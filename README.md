@@ -480,5 +480,10 @@ Leider treten diese falschen Messwerte in der Praxis (z.B. bei Stuhlbeinen, welc
 
 ## Quellen
 
-    [Raspberry Pi - Ultraschallsensor](http://www.tutorials-raspberrypi.de/gpio/entfernung-messen-mit-ultraschallsensor-hc-sr04/) - Aufruf 16.04.2015, 17:10
-	[Dokumentation, Realzeitnachweis und Codebeispiele](http://www.amazon.de/Moderne-Realzeitsysteme-kompakt-Einf%C3%BChrung-Embedded/dp/3898648303) - Verwendetes Buch
+[Raspberry Pi - Ultraschallsensor](http://www.tutorials-raspberrypi.de/gpio/entfernung-messen-mit-ultraschallsensor-hc-sr04/) 
+
+- Aufruf 16.04.2015, 17:10
+
+[Dokumentation, Realzeitnachweis und Codebeispiele](http://www.amazon.de/Moderne-Realzeitsysteme-kompakt-Einf%C3%BChrung-Embedded/dp/3898648303) 
+
+- Verwendetes Buch
