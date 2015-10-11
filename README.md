@@ -7,20 +7,24 @@ Während unseres Projektes soll ein realzeitfähiger "Putzroboter" realisiert we
 Die Abstandmessung zu den vorhandenen Hindernissen erfolgt durch drei Ultraschallsensoren, welche an der Vorderseite des Roboters angebracht werden. Die Sensoren werden dazu periodisch abgefragt und die Rückgabewerte werden anschließen verarbeitet und interpretiert, das heißt in eine absolute Entfernung zu den vor dem Roboter vorhandenen Gegenständen umgerechnet. Diese Informationen werden dazu verwendet, die Motoren des Roboters anzusteuern und eine autonome und kollisionsfreie Fahrt des Roboters im Raum zu ermöglichen.
 
 Im Gegensatz zu den kommerziell erwerbbaren Putzrobotern werden wir mehr Wert auf die Navigation als auf die Reinigungsqualität legen: Der Roboter soll einfach ein Swiffer-Staubtuch unter sich mitziehen.
-Anforderung
 
-> Die drei Ulraschallsensoren sollen in einem noch zu definierenden Zeitintervall angesteuert werden. Derzeit wissen wir aber noch nicht, wie diese sich verhalten, also ob die Sensoren gleichzeitig verwendet werden können, oder man sie nacheinander abfragen muss, um eine gegenseitige Beeinflussung zu verhindern. Die Ultraschallsensoren können den Abstand zwischen sich selber und einem Gegenstand ermitteln, indem sie einen kurzen Ultraschallimpuls aussenden und das Echo wieder empfangen. Anhand der dazwischenliegenden Zeit und der Schallgeschwindigkeit, lässt sich anschließen der Abstand zwischen Ultraschallsensor und Gegenstand berechnen.
-> Nach Vorliegen der Sensordaten, soll der Roboter entscheiden, was diese für die Ansteuerung der Motoren bedeuten. Wenn der Roboter auf ein Hindernis zusteuert (oder sich ein Hindernis dem Roboter nähert), soll er sich um 25° drehen und erneut eine Abstandsmessung durchführen. Dieser Vorgang wird so lange wiederholt, bis der Roboter genügend Abstand zu allen Gegenständen vor ihm hat und wieder geradeaus weiterfahren kann.
-> Die Steuerung des Roboters erfolgt mehr oder weniger zufällig nach dem oben beschriebenen Prozess. Die Anforderung liegt darin, dass der Roboter nicht mit einem Objekt kollidiert.
-> Eine Schwierigkeit wird darin liegen, die drei Sensoren so auszuwerten, dass alle Realzeitbedingungen erfüllt werden und der Roboter nebenher noch weiterfahren kann. Da der von uns verwendete Raspberry Pi eine Singlecore-CPU verwendet, können wir diese zwei Aufgaben (Auswerten der Sensoren sowie Fahren) nicht auf zwei unterschiedliche CPUs verteilen.
+## Anforderung
+
+Die drei Ulraschallsensoren sollen in einem noch zu definierenden Zeitintervall angesteuert werden. Derzeit wissen wir aber noch nicht, wie diese sich verhalten, also ob die Sensoren gleichzeitig verwendet werden können, oder man sie nacheinander abfragen muss, um eine gegenseitige Beeinflussung zu verhindern. Die Ultraschallsensoren können den Abstand zwischen sich selber und einem Gegenstand ermitteln, indem sie einen kurzen Ultraschallimpuls aussenden und das Echo wieder empfangen. Anhand der dazwischenliegenden Zeit und der Schallgeschwindigkeit, lässt sich anschließen der Abstand zwischen Ultraschallsensor und Gegenstand berechnen.
+
+Nach Vorliegen der Sensordaten, soll der Roboter entscheiden, was diese für die Ansteuerung der Motoren bedeuten. Wenn der Roboter auf ein Hindernis zusteuert (oder sich ein Hindernis dem Roboter nähert), soll er sich um 25° drehen und erneut eine Abstandsmessung durchführen. Dieser Vorgang wird so lange wiederholt, bis der Roboter genügend Abstand zu allen Gegenständen vor ihm hat und wieder geradeaus weiterfahren kann.
+
+Die Steuerung des Roboters erfolgt mehr oder weniger zufällig nach dem oben beschriebenen Prozess. Die Anforderung liegt darin, dass der Roboter nicht mit einem Objekt kollidiert.
+
+Eine Schwierigkeit wird darin liegen, die drei Sensoren so auszuwerten, dass alle Realzeitbedingungen erfüllt werden und der Roboter nebenher noch weiterfahren kann. Da der von uns verwendete Raspberry Pi eine Singlecore-CPU verwendet, können wir diese zwei Aufgaben (Auswerten der Sensoren sowie Fahren) nicht auf zwei unterschiedliche CPUs verteilen.
 
 ## Realzeitbedingung
 
-> Insgesamt muss der Roboter so entworfen werden, dass die Auslastung kleiner oder gleich der Anzahl der Rechnerkerne ist. Dies bedeutet, dass die einzelnen Threads so programmiert und synchronisiert werden müssen, dass die Rechnerauslastung in Bezug auf das Einkernsystem unter 100% bleibt.
+Insgesamt muss der Roboter so entworfen werden, dass die Auslastung kleiner oder gleich der Anzahl der Rechnerkerne ist. Dies bedeutet, dass die einzelnen Threads so programmiert und synchronisiert werden müssen, dass die Rechnerauslastung in Bezug auf das Einkernsystem unter 100% bleibt.
 
-> Die Werte der Sensoren werden alle 100 ms gemessen, dadurch ergibt sich für das Abfragen der drei Sensoren eine maximale Reaktionszeit von 300ms. Anschließend kann der Motor angesteuert werden, welcher ebenfalls eine maximale zulässige Reaktionszeit von 300ms aufweist. Dies bedeutet die Reaktion muss dann jeweils innerhalb der Zeitspanne von 300ms erfolgen.
+Die Werte der Sensoren werden alle 100 ms gemessen, dadurch ergibt sich für das Abfragen der drei Sensoren eine maximale Reaktionszeit von 300ms. Anschließend kann der Motor angesteuert werden, welcher ebenfalls eine maximale zulässige Reaktionszeit von 300ms aufweist. Dies bedeutet die Reaktion muss dann jeweils innerhalb der Zeitspanne von 300ms erfolgen.
 
-> Des Weiteren müssen alle Deadlines in der vorgegebene Zeit eingehalten werden. Die Blockierzeiten sind zu berücksichtigen, da mehrere Threads verwendet werden und auf einen gemeinsamen Bereich zugreifen, der deshalb geschützt werden muss.
+Des Weiteren müssen alle Deadlines in der vorgegebene Zeit eingehalten werden. Die Blockierzeiten sind zu berücksichtigen, da mehrere Threads verwendet werden und auf einen gemeinsamen Bereich zugreifen, der deshalb geschützt werden muss.
 
 ## Realzeitnachweis ohne Last
 
@@ -36,7 +40,7 @@ Zeiten*
 
 *Hinweis: Die Blockierzeit wird gemessen, indem für jede IO-Funktion die Blockierzeit berechnet wird.*
 
-### Berechnung der Blockierzeit:
+#### Berechnung der Blockierzeit:
 
 > Ultraschallsensoren tE,max = Executiontime mit Blockierzeit - Blockierzeit
 
@@ -77,8 +81,8 @@ Der Putzroboter ist ein Realzeitsystem, da er beide Realzeitbedingungen erfüllt
 
 #### Erste Bedingung
 
-| Task | Pges = Summe(tE,max / tP,min) | größer/gleich | c | Bedingung: Pges <= c |
-| ---- | ----------------------------- | ------------- | - | -------------------- |
+| Task | Pges = Summe(tE,max / tP,min) | größer/gleich |  c  | Bedingung: Pges <= c |
+| ---- | ----------------------------- | ------------- | --- | -------------------- |
 | Ultraschallsensor 1 | 0,084 | <= | - | - |
 | Ultraschallsensor 2 | 0,088 | <= | - | - |
 | Ultraschallsensor 3 | 0,084 | <= | - | - |
@@ -179,7 +183,7 @@ Zeiten*
 
 *Hinweis: Da beim Motorthread ständig auf das Sysfilesystem zugegriffen wird, ergeben sich lange Blockierzeiten, wenn das Programm Stress mit vielen IO-Threads ausgeführt wird. Bei den Ultraschallsensoren werden auf WiringPi-Funktion zugegriffen, welche direkt in die Register der GPIO-IC geschrieben werden, deshalb ändert sich hier an den Zeiten nichts. Beim Motorthread erhöht sich die Blockierzeit auf das ca. 32-fache. Die Deadline von 40ms wird in diesem Fall trotzdem eingehalten.*
 
-### Berechnung der Blockierzeit:
+#### Berechnung der Blockierzeit:
 
 > Ultraschallsensoren tE,max = Executiontime mit Blockierzeit - Blockierzeit
 
@@ -220,8 +224,8 @@ Der Putzroboter ist ein Realzeitsystem, da er beide Realzeitbedingungen erfüllt
 
 #### Erste Bedingung
 
-| Task | Pges = Summe(tE,max / tP,min) | größer/gleich | c | Bedingung: Pges <= c |
-| ---- | ----------------------------- | ------------- | - | -------------------- |
+| Task | Pges = Summe(tE,max / tP,min) | größer/gleich |  c  | Bedingung: Pges <= c |
+| ---- | ----------------------------- | ------------- | --- | -------------------- |
 | Ultraschallsensor 1 | 0,084 | <= | - | - |
 | Ultraschallsensor 2 | 0,088 | <= | - | - |
 | Ultraschallsensor 3 | 0,088 | <= | - | - |
@@ -253,8 +257,8 @@ Der Putzroboter ist ein Realzeitsystem, da er beide Realzeitbedingungen erfüllt
 | Motor (Mainthread) | 8% | <= | - |
 | Gesamt | 33,5% | <= | 75,6% |
 
-*Auslastungsgrenze bei 4 Threads liefert eine Aussage -> Kein notwendiger Schedulertest nötig. *
-*Nachweis unter Berücksichtigung der Ressourcen*
+*Auslastungsgrenze bei 4 Threads liefert eine Aussage -> Kein notwendiger Schedulertest nötig. 
+ Nachweis unter Berücksichtigung der Ressourcen*
 
 ### Blockierzeit
 
@@ -301,30 +305,35 @@ Der Putzroboter ist ein Realzeitsystem, da er beide Realzeitbedingungen erfüllt
 
 ### Verteilung der Aufgaben auf verschiedene Threads
 
-> Für die einzelnen Ultraschallsensoren wird jeweils ein Thread erzeugt. Jeder Thread hat die Aufgabe, die Messungen des ihm zugeordneten Sensors durchzuführen und die Daten in eine absolute Entfernung umzurechnen. Das Ergebnis wird in einer Variable abgespeichert.
-> - Minimale zulässige Reaktionszeit (tDmin): 0ms
-> - Maximale zulässige Reaktionszeit (tDmax): 250ms
-> - Maximale Auftrittshäufigkeit (tPmin): 250ms
+Für die einzelnen Ultraschallsensoren wird jeweils ein Thread erzeugt. Jeder Thread hat die Aufgabe, die Messungen des ihm zugeordneten Sensors durchzuführen und die Daten in eine absolute Entfernung umzurechnen. Das Ergebnis wird in einer Variable abgespeichert.
 
-> Beide Motoren werden von einem Thread angesteuert. Dieser Thread wertet die von den Ultraschallsensoren gelieferten Abstandswerte aus, und entscheidet anhand dieser Daten, mit welcher Geschwindigkeit die Motoren angesteuert werden. Zum Beispiel kann der Roboter bei einem sich nähernden Hindernis die Geschwindigkeit reduzieren und sich um 25° drehen, wenn er direkt vor einem Hindernis steht. Auch hier ist das Einhalten der Realzeitbedingungen notwendig, da das Wissen eines nahenden Zusammenstoßes (also die rechtzeitig vorhandenen Abstandswerte der Ultraschallsensoren) nichts bringt, wenn die Roboter seine Motoren trotzdem nicht rechtzeitig stoppen kann. Wichtig ist außerdem, dass die Geschwindigkeitsanpassung beider Motoren direkt nacheinander erfolgt (zum Beispiel könnte diese Sektion durch einen Mutex geschützt sein), um zu verhindern, dass die beiden Motoren mit einem zu großen zeitlichen Abstand angesteuert werden, was eine ungewollte Drehung zur Folge hätte (angenommen, Motor 1 fährt los und Motor 2 reagiert erst 1 Sekunde später).
-> - Minimale zulässige Reaktionszeit (tDmin): 0ms
-> - Maximale zulässige Reaktionszeit (tDmax): 40ms
-> - Maximale Auftrittshäufigkeit (tPmin): 40ms
+- Minimale zulässige Reaktionszeit (tDmin): 0ms
+- Maximale zulässige Reaktionszeit (tDmax): 250ms
+- Maximale Auftrittshäufigkeit (tPmin): 250ms
+
+Beide Motoren werden von einem Thread angesteuert. Dieser Thread wertet die von den Ultraschallsensoren gelieferten Abstandswerte aus, und entscheidet anhand dieser Daten, mit welcher Geschwindigkeit die Motoren angesteuert werden. Zum Beispiel kann der Roboter bei einem sich nähernden Hindernis die Geschwindigkeit reduzieren und sich um 25° drehen, wenn er direkt vor einem Hindernis steht. Auch hier ist das Einhalten der Realzeitbedingungen notwendig, da das Wissen eines nahenden Zusammenstoßes (also die rechtzeitig vorhandenen Abstandswerte der Ultraschallsensoren) nichts bringt, wenn die Roboter seine Motoren trotzdem nicht rechtzeitig stoppen kann. Wichtig ist außerdem, dass die Geschwindigkeitsanpassung beider Motoren direkt nacheinander erfolgt (zum Beispiel könnte diese Sektion durch einen Mutex geschützt sein), um zu verhindern, dass die beiden Motoren mit einem zu großen zeitlichen Abstand angesteuert werden, was eine ungewollte Drehung zur Folge hätte (angenommen, Motor 1 fährt los und Motor 2 reagiert erst 1 Sekunde später).
+ 
+- Minimale zulässige Reaktionszeit (tDmin): 0ms
+- Maximale zulässige Reaktionszeit (tDmax): 40ms
+- Maximale Auftrittshäufigkeit (tPmin): 40ms
 
 ### Theorie / Berechnungen
 
 Wir sind bei der Berechnung der maximal zulässigen Reaktionsgeschwindigkeit der einzelnen Funktionen von folgenden Annahmen ausgegangen:
 
 > Der Roboter schafft beim geradeausfahren eine Geschwindigkeit von 0,4m/s (= 4m pro 10s). Tatsächlicher gemessener Wert = 0,42m/s
+
 > Der Bremsweg beträgt bei voller Geschwindigkeit zwischen 6 und 7cm
+
 > Das Auswerten der Ultraschallsensoren benötigt pro Sensor 100ms, bei den vorhandenen drei Sensoren wären das insgesamt maximal 300ms.
+
 > Die Ansteuerung der Motoren inklusive der Entscheidungsfindung über die zu fahrende Geschwindigkeit sollte nicht länger als 300ms dauern.
 
 Aus den oben aufgelisteten Einschränkungen lassen sich nun weitere Schlüsse ziehen:
 
 > 0,42m/s * (0,2s Sensorauswertung * 3 Sensoren + 0,3s Motoransteuerung) + 0,07m Bremsweg = 0,448m
 
--> Zeit der Motoransteuerung wird angenommen
+- Zeit der Motoransteuerung wird angenommen
 
 Das heißt, das unser Roboter spätestens bei einem Sicherheitsabstand von 0,49m zu einem Hindernis eine Bremsung einleiten muss. Eventuell wäre es sinnvoll, schon vorher ein wenig abzubremsen, um den "Sicherheitsabstand" zu Hindernis verkürzen zu können und damit die gereinigte Fläche zu vergrößern.
 
@@ -371,8 +380,8 @@ Zu beachten ist, dass der Raspberry keine Hardware-PWM besitzt, sondern nur Soft
 
 ### Belegungsplan - Restliche elektronische Bauteile
 
-| Pin | Bauteil | ZU | Pin | Bauteil |
-| --- | ------- | -- | --- | ------- |
+| Pin | Bauteil |  ZU  | Pin | Bauteil |
+| --- | ------- | ---- | --- | ------- |
 | 15 | L293D | ZU | VDD | Batterie |
 | 5 | L293D | ZU | VDD | Motor 1 |
 | 11 | L293D | ZU | VSS | Motor 1 |
@@ -433,17 +442,21 @@ Erste Planung des Gehäuses für den 3D-Drucker
 
 ## Probleme und Lösungen
 
-### Bereich Programmierung - Zahlenüberlauf eines long integer in der Abstandsberechnung mithilfe der Daten der Ultraschallsensoren. Das Problem trat nur innerhalb einer Zwischenrechnung in einer Zeile auf und ist uns daher zuerst nicht aufgefallen.
+### Bereich Programmierung
+
+Zahlenüberlauf eines long integer in der Abstandsberechnung mithilfe der Daten der Ultraschallsensoren. Das Problem trat nur innerhalb einer Zwischenrechnung in einer Zeile auf und ist uns daher zuerst nicht aufgefallen.
 
 > Lösung: Verwendung eines unsigned long long Datentyps
 
-### Bereich Mechanik Durch das freirotierbare Steuerrad am hinteren Ende des Roboters, wird die Fahrtrichtung so abgelenkt, dass der Roboter nicht geradeaus fährt sondern einen Bogen nach links oder nach rechts fährt.
+### Bereich Mechanik 
+
+Durch das freirotierbare Steuerrad am hinteren Ende des Roboters, wird die Fahrtrichtung so abgelenkt, dass der Roboter nicht geradeaus fährt sondern einen Bogen nach links oder nach rechts fährt.
 
 > Lösung: Hinterrad fixieren
 
 ### Bereich Hardware/Programmierung
 
-> Die Ultraschallsensoren geben Störwerte aus, wenn der Abstand zu einem Objekt außerhalb des Messbereichs ist, sprich wenn ein Objekt entweder kürzer als 3cm entfernt ist oder weiter als 3,5m entfernt ist. Da die fehlerhaften Werte innerhalb eines plausiblen Wertebereichs liegen, "erkennt" der Roboter in solchen Fällen Hindernisse wo keine sind und dreht sich dann...
+Die Ultraschallsensoren geben Störwerte aus, wenn der Abstand zu einem Objekt außerhalb des Messbereichs ist, sprich wenn ein Objekt entweder kürzer als 3cm entfernt ist oder weiter als 3,5m entfernt ist. Da die fehlerhaften Werte innerhalb eines plausiblen Wertebereichs liegen, "erkennt" der Roboter in solchen Fällen Hindernisse wo keine sind und dreht sich dann...
 
 Diese Störungen haben wir versucht mit einem Oszilloskop zu debuggen:
 
@@ -467,5 +480,5 @@ Leider treten diese falschen Messwerte in der Praxis (z.B. bei Stuhlbeinen, welc
 
 ## Quellen
 
-    http://www.tutorials-raspberrypi.de/gpio/entfernung-messen-mit-ultraschallsensor-hc-sr04/ - Aufruf 16.04.2015, 17:10
-	http://www.amazon.de/Moderne-Realzeitsysteme-kompakt-Einf%C3%BChrung-Embedded/dp/3898648303 - Verwendetes Buch
+    [Raspberry Pi - Ultraschallsensor](http://www.tutorials-raspberrypi.de/gpio/entfernung-messen-mit-ultraschallsensor-hc-sr04/) - Aufruf 16.04.2015, 17:10
+	[Dokumentation, Realzeitnachweis und Codebeispiele](http://www.amazon.de/Moderne-Realzeitsysteme-kompakt-Einf%C3%BChrung-Embedded/dp/3898648303) - Verwendetes Buch
