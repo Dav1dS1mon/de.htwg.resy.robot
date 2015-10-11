@@ -1,4 +1,20 @@
-# Realzeitsysteme Projekt - Potzroboter
+# Information zum Projekt
+
+> Zuständige Professor: Prof. Dr. Mächtel
+
+> Hochschule: HTWG
+
+> Scheinart: Projekt
+
+> Teampartner: Dennis Griesser & Torben Woltjen
+
+> Semester: SS2015
+
+> Fortführung des Projektes: Ja
+
+> Status: Pausiert
+
+# Realzeitsysteme Projekt - Potzroboter - Dokumentation
 
 ## Projektbeschreibung
 
