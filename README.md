@@ -12,9 +12,11 @@
 
 > Fortführung des Projektes: Ja
 
-> Status: Pausiert
+> Status: Pausiert seit Juli 2015
 
 # Realzeitsysteme Projekt - Potzroboter - Dokumentation
+
+![IMG_20150623_203904](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/IMG_20150623_203904.jpg)
 
 ## Projektbeschreibung
 
@@ -137,7 +139,7 @@ Der Putzroboter ist ein Realzeitsystem, da er beide Realzeitbedingungen erfüllt
 
 #### Datenfluss / Ressourcenverwendung
 
-![Datenfluss](----------------------------------------------------------------------------------------------------------------)
+![Datenfluss](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/Datenfluss%20Resy.png)
 
 | Task | Ultraschallsensor Links | Ultraschallsensor Front | Ultraschallsensor Rechts |
 | ---- | ----------------------- | ----------------------- | ------------------------ |
@@ -280,7 +282,7 @@ Der Putzroboter ist ein Realzeitsystem, da er beide Realzeitbedingungen erfüllt
 
 #### Datenfluss / Ressourcenverwendung
 
-![Datenfluss](-----------------------------------------------------------------------------------------------------)
+![Datenfluss](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/Datenfluss%20Resy.png)
 
 | Task | Ultraschallsensor Links | Ultraschallsensor Front | Ultraschallsensor Rechts |
 | ---- | ----------------------- | ----------------------- | ------------------------ |
@@ -357,11 +359,11 @@ Zu beachten ist, dass der Raspberry keine Hardware-PWM besitzt, sondern nur Soft
 
 ### Datenfluss
 
-![Datenfluss](------------------------------------------------------------------------------------------)
+![Datenfluss](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/Datenfluss%20Resy.png)
 
 ### Schaltplan
 
-![Schaltplan](------------------------------------------------------------------------------------------)
+![Schaltplan](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/Schaltplan.png)
 
 ### Belegungsplan - Raspberry Pi
 
@@ -430,7 +432,7 @@ Haushaltshilfe: Der Roboter soll die Bodenreinigung im Haushalt übernehmen.
 
 Erste Planung des Gehäuses für den 3D-Drucker
 
-![Gehaeuseplanung](-----------------------------------------------------------------------)
+![Gehaeuseplanung](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/Gehaeuseplanung.jpg)
 
 ## Milestones
 
@@ -476,19 +478,19 @@ Die Ultraschallsensoren geben Störwerte aus, wenn der Abstand zu einem Objekt a
 
 Diese Störungen haben wir versucht mit einem Oszilloskop zu debuggen:
 
-![IMG_20150623_203904](--------------------------------------------------------------------------------------)
+![IMG_20150623_203904](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/IMG_20150623_203904.jpg)
 
 Im folgenden Bild ist das Verhalten des Ultraschallsensors bei vernünftigen Werten zu erkennen. Auch schön zu sehen ist unsere Periode von 250ms. Der Channel 1 (oben) zeigt das Echo-Signal während der Channel 2 (unten) den Trigger zeigt (letzterer wird bei dieser Zoomstufe aufgrund der geringen Auflösung des Oszilloskop-Bildschirms nur manchmal dargestellt; es existiert aber kurz vor jeder Echo-HIGH-Flanke):
 
-![IMG_20150623_224747](--------------------------------------------------------------------------------------)
+![IMG_20150623_224747](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/IMG_20150623_224747.jpg)
 
 In folgendem Bild sieht man hingegen das Fehlverhalten des Ultraschallsensors bei out-of-range. Es sind immer wieder sehr kurze Flanken zu sehen.
 
-![IMG_20150623_204752](--------------------------------------------------------------------------------------)
+![IMG_20150623_204752](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/IMG_20150623_204752.jpg)
 
 Wenn der Sensor konstant "out-of-range" detektiert, treten diese Flanken genau jede zweite Messung auf. Nun könnte man auf die Idee kommen, einfach jede zweite Messung zu verwerfen - das war auch unser erster Ansatz:
 
-![IMG_20150623_223602](--------------------------------------------------------------------------------------)
+![IMG_20150623_223602](https://github.com/Dav1dS1mon/de.htwg.resy.robot/blob/master/Ressourcen%20Dokumentation/IMG_20150623_223602.jpg)
 
 Leider treten diese falschen Messwerte in der Praxis (z.B. bei Stuhlbeinen, welche auf Entfernung nur unzuverlässig detektiert werden, weil sie zu schmal sind) nur sehr unregelmäßig auf - teils gibt es auch mehrere falsche Messwerte in Folge. -> Schlussfolgerung: Durch weitere Testvorgänge kamen wir zum Entschluss, dass ein Ultraschallsensor defekt ist und deshalb diese Problematik auftritt
 
